@@ -15,6 +15,10 @@ import shutil
 import time
 import math
 
+from Amodules.GFrameAnim import GenerateFrameAnimation
+from Amodules.GStartFrames import GenerateStartFrames
+from Amodules.GStart import GenerateStart
+
 from modules import shared
 from modules import scripts
 from modules import script_callbacks
@@ -34,11 +38,6 @@ class Script(scripts.Script):
     def ui(self, is_img2img):
         return []
         
-def run_ar(
-        InFF, 
-        OuFF):
-    return InFF, OuFF
-
 
 def run_vr(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resize_from_h, cfg_scale, seed, prompt_styles):
     quest = {
@@ -67,6 +66,41 @@ def run_vr(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resi
         image = Image.open(io.BytesIO(base64.b64decode(i.split(",",1)[0])))
     
     return image
+
+def run_ginering():
+    quest = {
+        "denoising_strength": 1,
+        "prompt": "<lora:blindbox_v1_mix:1.4>, the girl amigurumi is cute against the background of the city in the style of cyberpunk",
+        "styles": [],
+        "seed": -1,
+        "subseed": -1,
+        "subseed_strength": 0,
+        "seed_resize_from_h": -1,
+        "seed_resize_from_w": -1,
+        "sampler_name": "Euler a",
+        "steps": 0,
+        # "cfg_scale": 7,
+        "width": 512,
+        "height": 1024,
+        "negative_prompt": "(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation",
+        "sampler_index": "Euler a",
+        "save_images": False,
+        "alwayson_scripts": {
+        "controlnet": {
+        "args": [
+            {
+                "input_image": "data:image/png;base64," + f"{encoded_string}",
+                "module": "openpose_hand",
+                "model": 'control_v11p_sd15_openpose [cab727d4]',
+                "weight": 1,
+                "processor_res": 512,
+                "guidance_start": 0.2,
+                "guidance_end": 1
+            }
+        ]
+        }
+    }
+    }
 
 def add_tab():
     print('LAB')
