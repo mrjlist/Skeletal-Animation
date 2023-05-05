@@ -61,21 +61,12 @@ def run_vr(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resi
         }
     print(quest)
     response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=quest)
-    # r = response.json()
+    r = response.json()
     
-    # for i in r['images']:
-    #     image = Image.open(io.BytesIO(base64.b64decode(i.split(",",1)[0])))
-
-    #     png_payload = {
-    #         "image": "data:image/png;base64," + i
-    #     }
-    #     response2 = requests.post(url=f'{url}/sdapi/v1/png-info', json=png_payload)
-    #     pnginfo = PngImagePlugin.PngInfo()
-    #     pnginfo.add_text("parameters", response2.json().get("info"))
-    #     print(type(response2.json().get("info")))
-    #     image.save('outputs/animate/output.png', pnginfo=pnginfo)
+    for i in r['images']:
+        image = Image.open(io.BytesIO(base64.b64decode(i.split(",",1)[0])))
     
-    # return image
+    return image
 
 def add_tab():
     print('LAB')
@@ -95,14 +86,16 @@ def add_tab():
                         with gr.Row():
                             with gr.Column(scale=80):
                                 with gr.Row():
-                                    prompt = gr.Textbox(show_label=False, lines=1, interactive=True, elem_id=f"prompt", placeholder="Enter your prompt here...")
+                                    prompt = gr.Textbox(show_label=False, lines=2, interactive=True, elem_id=f"prompt", placeholder="Enter your prompt here...")
                                 with gr.Row():
-                                    n_prompt = gr.Textbox(show_label=False, lines=2, interactive=True, elem_id=f"n_prompt", placeholder="Enter your negative prompt here...")
+                                    n_prompt = gr.Textbox(show_label=False, lines=3, interactive=True, elem_id=f"n_prompt", placeholder="Enter your negative prompt here...")
                             with gr.Column():
                                 with gr.Row():
-                                    run_button_vr = gr.Button(value="Run", variant="primary")
+                                    run_button_vr = gr.Button(value="Run reference", variant="primary")
                                 with gr.Row():
-                                    prompt_styles = gr.Dropdown(label="Styles", elem_id=f"styles", choices=[k for k, v in shared.prompt_styles.styles.items()], value=[], multiselect=True)
+                                    run_button_vr_anim = gr.Button(value="Run frame", variant="stop")
+                                with gr.Row():
+                                    prompt_styles = gr.Dropdown(label="Styles", show_label=False, elem_id=f"styles", choices=[k for k, v in shared.prompt_styles.styles.items()], value=[], multiselect=True)
                 with gr.Row():
                     with gr.Column():
                         with gr.Row():
@@ -117,23 +110,24 @@ def add_tab():
                                 InMFF = gr.Textbox(label="Folder skeletal mask frames", placeholder="Mask frames")
                                 denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising strength', value=0.7, elem_id="denoising_strength")
                     with gr.Column():
-                        ti_gallery = gr.Gallery(label='Output', show_label=False, elem_id='ti_gallery').style(columns=4)
+                        ti_gallery = gr.Image(label='Output', show_label=False, elem_id='ti_gallery', type="pil")
+                        
 
-            with gr.Tab("Guide"):
-                with gr.Column():
-                    gr.Markdown("# What DFI does?")
-                    with gr.Accordion("Info", open=False):
-                        gr.Markdown("DFI processing analyzes the motion of the original video, and attempts to force that information into the generated video. Demo on https://github.com/AbyszOne/Abysz-LAB-Ext")
-                        gr.Markdown("In short, this will reduce flicker in areas of the video that don't need to change, but SD does. For example, for a man smoking, leaning against a pole, it will detect that the pole is static, and will try to prevent it from changing as much as possible.")
-                        gr.Markdown("This is an aggressive process that requires a lot of control for each context. Read the recommended strategies.")
-                        gr.Markdown("Although Video to Video is the most efficient way, a DFI One Shot method is under experimental development as well.")
-                    gr.Markdown("# Usage strategies")
-                    with gr.Accordion("Info", open=False):
-                        gr.Markdown("If you get enough understanding of the tool, you can achieve a much more stable and clean enough rendering. However, this is quite demanding.")
-                        gr.Markdown("Instead, a much friendlier and faster way to use this tool is as an intermediate step. For this, you can allow a reasonable degree of corruption in exchange for more general stability. ")
-                        gr.Markdown("You can then clean up the corruption and recover details with a second step in Stable Diffusion at low denoising (0.2-0.4), using the same parameters and seed.")
-                        gr.Markdown("In this way, the final result will have the stability that we have gained, maintaining final detail. If you find a balanced workflow, you will get something at least much more coherent and stable than the raw AI render.")
-                        gr.Markdown("**OPTIONAL:** Although not ideal, you can use the same AI generated video as the source, instead of the RAW. The trick is to use DFI and denoise to wash out map details so that you reduce low/mid changes between frames. If you only need a soft deflick, it is a valid option.")
+            # with gr.Tab("Guide"):
+            #     with gr.Column():
+            #         gr.Markdown("# What DFI does?")
+            #         with gr.Accordion("Info", open=False):
+            #             gr.Markdown("DFI processing analyzes the motion of the original video, and attempts to force that information into the generated video. Demo on https://github.com/AbyszOne/Abysz-LAB-Ext")
+            #             gr.Markdown("In short, this will reduce flicker in areas of the video that don't need to change, but SD does. For example, for a man smoking, leaning against a pole, it will detect that the pole is static, and will try to prevent it from changing as much as possible.")
+            #             gr.Markdown("This is an aggressive process that requires a lot of control for each context. Read the recommended strategies.")
+            #             gr.Markdown("Although Video to Video is the most efficient way, a DFI One Shot method is under experimental development as well.")
+            #         gr.Markdown("# Usage strategies")
+            #         with gr.Accordion("Info", open=False):
+            #             gr.Markdown("If you get enough understanding of the tool, you can achieve a much more stable and clean enough rendering. However, this is quite demanding.")
+            #             gr.Markdown("Instead, a much friendlier and faster way to use this tool is as an intermediate step. For this, you can allow a reasonable degree of corruption in exchange for more general stability. ")
+            #             gr.Markdown("You can then clean up the corruption and recover details with a second step in Stable Diffusion at low denoising (0.2-0.4), using the same parameters and seed.")
+            #             gr.Markdown("In this way, the final result will have the stability that we have gained, maintaining final detail. If you find a balanced workflow, you will get something at least much more coherent and stable than the raw AI render.")
+            #             gr.Markdown("**OPTIONAL:** Although not ideal, you can use the same AI generated video as the source, instead of the RAW. The trick is to use DFI and denoise to wash out map details so that you reduce low/mid changes between frames. If you only need a soft deflick, it is a valid option.")
         
         # dt_inputs=[ruta_entrada_1, ruta_entrada_2, denoise_blur, dfi_strength, dfi_deghost, test_mode, smooth]
         run_inputs_ar=[
@@ -152,6 +146,7 @@ def add_tab():
             prompt_styles
             ]
         
+
         run_button_ar.click(fn=run_ar, inputs=run_inputs_ar, outputs=output_placeholder_ar)
         run_button_vr.click(fn=run_vr, inputs=run_inputs_vr, outputs=ti_gallery)
     return [(AnimatedTT, "Animation", "AnimatedTT")]
