@@ -99,8 +99,7 @@ def filet():
 
         source_dir = 'source'  # путь к исходной папке
         dest_dir = 'destination'  # путь к папке, куда нужно переместить изображения
-        prefix = 'image_'  # префикс для новых имен файлов
-        suffix = '.jpg'  # расширение для новых имен файлов
+        suffix = '.png'  # расширение для новых имен файлов
 
         # Создаем папку назначения, если она не существует
         if not os.path.exists(dest_dir):
@@ -117,7 +116,7 @@ def filet():
             # Проверяем, что файл - изображение
             if file.endswith('.jpg'):
                 # Формируем новое имя файла
-                new_name = prefix + str(count) + suffix
+                new_name = str(count) + suffix
                 
                 # Полный путь к исходному файлу
                 old_path = os.path.join(source_dir, file)
