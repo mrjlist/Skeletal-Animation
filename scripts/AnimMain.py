@@ -39,68 +39,68 @@ class Script(scripts.Script):
         return []
         
 
-def run_vr(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resize_from_h, cfg_scale, seed, prompt_styles):
-    quest = {
-        # "denoising_strength": 0,
-        "prompt": prompt,
-        "styles": prompt_styles,
-        "seed": -1,
-        "subseed": -1,
-        "subseed_strength": 0,
-        "seed_resize_from_h": -1,
-        "seed_resize_from_w": -1,
-        "sampler_name": samplers[sampler_index].name,
-        "steps": steps,
-        "cfg_scale": cfg_scale,
-        "width": seed_resize_from_w,
-        "height": seed_resize_from_h,
-        "negative_prompt": n_prompt,
-        "sampler_index": samplers[sampler_index].name,
-        "save_images": True,
-        }
-    print(quest)
-    response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=quest)
-    r = response.json()
+# def run_vr(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resize_from_h, cfg_scale, seed, prompt_styles):
+#     quest = {
+#         # "denoising_strength": 0,
+#         "prompt": prompt,
+#         "styles": prompt_styles,
+#         "seed": -1,
+#         "subseed": -1,
+#         "subseed_strength": 0,
+#         "seed_resize_from_h": -1,
+#         "seed_resize_from_w": -1,
+#         "sampler_name": samplers[sampler_index].name,
+#         "steps": steps,
+#         "cfg_scale": cfg_scale,
+#         "width": seed_resize_from_w,
+#         "height": seed_resize_from_h,
+#         "negative_prompt": n_prompt,
+#         "sampler_index": samplers[sampler_index].name,
+#         "save_images": True,
+#         }
+#     print(quest)
+#     response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=quest)
+#     r = response.json()
     
-    for i in r['images']:
-        image = Image.open(io.BytesIO(base64.b64decode(i.split(",",1)[0])))
+#     for i in r['images']:
+#         image = Image.open(io.BytesIO(base64.b64decode(i.split(",",1)[0])))
     
-    return image
+#     return image
 
-def run_ginering():
-    quest = {
-        "denoising_strength": 1,
-        "prompt": "<lora:blindbox_v1_mix:1.4>, the girl amigurumi is cute against the background of the city in the style of cyberpunk",
-        "styles": [],
-        "seed": -1,
-        "subseed": -1,
-        "subseed_strength": 0,
-        "seed_resize_from_h": -1,
-        "seed_resize_from_w": -1,
-        "sampler_name": "Euler a",
-        "steps": 0,
-        # "cfg_scale": 7,
-        "width": 512,
-        "height": 1024,
-        "negative_prompt": "(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation",
-        "sampler_index": "Euler a",
-        "save_images": False,
-        "alwayson_scripts": {
-        "controlnet": {
-        "args": [
-            {
-                "input_image": "data:image/png;base64," + f"{encoded_string}",
-                "module": "openpose_hand",
-                "model": 'control_v11p_sd15_openpose [cab727d4]',
-                "weight": 1,
-                "processor_res": 512,
-                "guidance_start": 0.2,
-                "guidance_end": 1
-            }
-        ]
-        }
-    }
-    }
+# def run_ginering():
+#     quest = {
+#         "denoising_strength": 1,
+#         "prompt": "<lora:blindbox_v1_mix:1.4>, the girl amigurumi is cute against the background of the city in the style of cyberpunk",
+#         "styles": [],
+#         "seed": -1,
+#         "subseed": -1,
+#         "subseed_strength": 0,
+#         "seed_resize_from_h": -1,
+#         "seed_resize_from_w": -1,
+#         "sampler_name": "Euler a",
+#         "steps": 0,
+#         # "cfg_scale": 7,
+#         "width": 512,
+#         "height": 1024,
+#         "negative_prompt": "(deformed, distorted, disfigured:1.3), poorly drawn, bad anatomy, wrong anatomy, extra limb, missing limb, floating limbs, (mutated hands and fingers:1.4), disconnected limbs, mutation, mutated, ugly, disgusting, blurry, amputation",
+#         "sampler_index": "Euler a",
+#         "save_images": False,
+#         "alwayson_scripts": {
+#         "controlnet": {
+#         "args": [
+#             {
+#                 "input_image": "data:image/png;base64," + f"{encoded_string}",
+#                 "module": "openpose_hand",
+#                 "model": 'control_v11p_sd15_openpose [cab727d4]',
+#                 "weight": 1,
+#                 "processor_res": 512,
+#                 "guidance_start": 0.2,
+#                 "guidance_end": 1
+#             }
+#         ]
+#         }
+#     }
+#     }
 
 def add_tab():
     print('LAB')
@@ -181,8 +181,8 @@ def add_tab():
             ]
         
 
-        run_button_ar.click(fn=run_ar, inputs=run_inputs_ar, outputs=output_placeholder_ar)
-        run_button_vr.click(fn=run_vr, inputs=run_inputs_vr, outputs=ti_gallery)
+        run_button_ar.click(fn=GenerateFrameAnimation, inputs=run_inputs_ar, outputs=output_placeholder_ar)
+        # run_button_vr.click(fn=run_vr, inputs=run_inputs_vr, outputs=ti_gallery)
     return [(AnimatedTT, "Animation", "AnimatedTT")]
         
 script_callbacks.on_ui_tabs(add_tab)

@@ -7,7 +7,7 @@ import base64
 from modules.sd_samplers import samplers
 
 url = "http://127.0.0.1:7860"
-def GenerateStartFrames(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resize_from_h, cfg_scale, seed, prompt_styles):
+def GenerateStart(prompt, n_prompt, sampler_index, steps, seed_resize_from_w, seed_resize_from_h, cfg_scale, seed, prompt_styles):
     quest = {
         # "denoising_strength": 0,
         "prompt": prompt,
